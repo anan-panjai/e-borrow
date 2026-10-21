@@ -31,13 +31,13 @@
    ------------------------------------------------------------ */
 
 // รายชื่อหน่วยงาน / ward ทั้งหมด — เพิ่มหรือแก้ชื่อได้เลย
-const WARDS = ["สจม์ 1", "สจม์ 2", "ENT 1", "ENT 2", "โรคปอด"];
+const WARDS = ["สงฆ์ 1", "สงฆ์ 2", "ENT 1", "ENT 2", "โรคปอด"];
 
 // บัญชีผู้ใช้ตัวอย่าง: รหัสพนักงาน (OT/N + เลข 7 หลัก) → ชื่อ + ward
 // ระบบจริงควรดึงจากฐานข้อมูลบุคลากร แต่ตอนนี้จำลองไว้ก่อน
 const USERS = {
-  "OT1234567": { name: "คุณสมชาย ใจดี",   ward: "สจม์ 1" },
-  "OT7654321": { name: "คุณสมหญิง รักงาน", ward: "สจม์ 2" },
+  "OT1234567": { name: "คุณสมชาย ใจดี",   ward: "สงฆ์ 1" },
+  "OT7654321": { name: "คุณสมหญิง รักงาน", ward: "สงฆ์ 2" },
   "N1111111":  { name: "พยาบาลวิภา",      ward: "ENT 1"  },
   "N2222222":  { name: "พยาบาลอรทัย",     ward: "โรคปอด" },
 };
@@ -76,15 +76,15 @@ function shortThaiDate(iso) {
 
 // ข้อมูลตัวอย่างตามภาพร่าง เพื่อให้เปิดมาแล้วเห็นรายการเลย (วันที่อิงจากวันนี้ จะได้เห็นตัวอย่างเตือนเกินกำหนด)
 const SEED_RECORDS = [
-  { id: 1, borrowerName: "คุณสมชาย ใจดี", borrowerWard: "สจม์ 1", fromWard: "ENT 1",
+  { id: 1, borrowerName: "คุณสมชาย ใจดี", borrowerWard: "สงฆ์ 1", fromWard: "ENT 1",
     item: "Mobile Ven", qty: 1, reason: "ของหมด", status: "borrowed", date: daysAgoISO(3) },
-  { id: 2, borrowerName: "คุณสมชาย ใจดี", borrowerWard: "สจม์ 1", fromWard: "ENT 2",
+  { id: 2, borrowerName: "คุณสมชาย ใจดี", borrowerWard: "สงฆ์ 1", fromWard: "ENT 2",
     item: "NSS 100 mL", qty: 1, reason: "เคสด่วน", status: "borrowed", date: daysAgoISO(1) },
-  { id: 3, borrowerName: "พยาบาลอรทัย", borrowerWard: "โรคปอด", fromWard: "สจม์ 1",
+  { id: 3, borrowerName: "พยาบาลอรทัย", borrowerWard: "โรคปอด", fromWard: "สงฆ์ 1",
     item: "NSS 1000 mL", qty: 5, reason: "สต๊อกไม่พอ", status: "returning", date: daysAgoISO(6) },
-  { id: 4, borrowerName: "พยาบาลอรทัย", borrowerWard: "โรคปอด", fromWard: "สจม์ 1",
+  { id: 4, borrowerName: "พยาบาลอรทัย", borrowerWard: "โรคปอด", fromWard: "สงฆ์ 1",
     item: "NSS 100 mL", qty: 10, reason: "", status: "borrowed", date: daysAgoISO(9) },
-  { id: 5, borrowerName: "คุณสมหญิง รักงาน", borrowerWard: "สจม์ 2", fromWard: "สจม์ 1",
+  { id: 5, borrowerName: "คุณสมหญิง รักงาน", borrowerWard: "สงฆ์ 2", fromWard: "สงฆ์ 1",
     item: "High flow", qty: 1, reason: "เครื่องเสีย", status: "borrowed", date: daysAgoISO(16) },
 ];
 
