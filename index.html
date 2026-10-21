@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b5f55" />
+  <meta name="description" content="E-Borrow ระบบยืม–คืนอุปกรณ์ระหว่างหน่วยงานในโรงพยาบาล ยืมได้ในไม่กี่แตะ ติดตามสถานะส่งคืน–รับคืนได้ทันที" />
+  <title>E-Borrow | ระบบยืม–คืนของภายในโรงพยาบาล</title>
+
+  <!-- ฟอนต์ภาษาไทย (โหลดจาก Google Fonts ต้องต่อเน็ตตอนเปิดเว็บ) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       ชุดไอคอน (SVG sprite) — เรียกใช้ด้วย <svg class="ic"><use href="#i-ชื่อ"/></svg>
+       ============================================================ -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+    <symbol id="i-swap" viewBox="0 0 24 24"><path d="M4 8h15"/><path d="M15 4l4 4-4 4"/><path d="M20 16H5"/><path d="M9 12l-4 4 4 4"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M16 8l4 4-4 4M20 12H9"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.6 6.1A10 10 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.6 7.6A17 17 0 0 0 2 12s3.5 6 10 6a10 10 0 0 0 4.2-.9"/><path d="M3 3l18 18"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M14 10h5a1 1 0 0 1 1 1v10M2 21h20"/><path d="M8 8h2M8 12h2M8 16h2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8"/><path d="M3 13v6a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-6h-5l-1 2h-6l-1-2z"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">ข้ามไปที่เนื้อหา</a>
+
+  <!-- ============================================================
+       หน้า LOGIN
+       แนวคิด: ทุก "หน้า" คือ <section class="page"> ในไฟล์เดียวกัน
+       JavaScript จะแสดงทีละหน้า (Single Page App แบบง่าย) และใช้ #hash
+       ทำให้ปุ่ม Back ของมือถือ/เบราว์เซอร์ใช้งานได้ตามปกติ
+       ============================================================ -->
+  <section id="page-login" class="page login-wrap">
+    <aside class="login-brand" aria-hidden="true">
+      <div class="brand-row">
+        <span class="logo-mark">E</span>
+        <span class="brand-name">E-Borrow</span>
+      </div>
+      <h2>ยืม–คืนของระหว่าง ward<br />ง่ายใน 3 ขั้นตอน</h2>
+      <ol class="login-steps">
+        <li><span>1</span> ยืม — เลือก ward แล้วเพิ่มของ</li>
+        <li><span>2</span> ส่งคืน — ผู้ยืมกดเมื่อนำของไปคืน</li>
+        <li><span>3</span> รับคืน — เจ้าของกดยืนยันเมื่อได้ของ</li>
+      </ol>
+    </aside>
+
+    <div class="login-panel">
+      <form id="login-form" class="login-card" novalidate>
+        <div class="login-head">
+          <span class="logo-mark logo-sm">E</span>
+          <div>
+            <h1>เข้าสู่ระบบ</h1>
+            <p>E-Borrow · ระบบยืม–คืนอุปกรณ์</p>
+          </div>
+        </div>
+
+        <label for="login-user">รหัสพนักงาน</label>
+        <div class="input-wrap">
+          <input id="login-user" type="text" inputmode="text" autocapitalize="characters"
+                 placeholder="OT1234567 หรือ N7654321" autocomplete="username" spellcheck="false" />
+          <span id="login-user-ok" class="input-ok hidden" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></span>
+        </div>
+        <p class="hint">ระบบดึงชื่อและ ward จากรหัส OT / N + เลข 7 หลักโดยอัตโนมัติ</p>
+
+        <label for="login-pw">รหัสผ่าน</label>
+        <div class="input-wrap">
+          <input id="login-pw" type="password" placeholder="รหัสผ่าน" autocomplete="current-password" />
+          <button type="button" id="btn-toggle-pw" class="input-btn" aria-label="แสดงรหัสผ่าน">
+            <svg class="ic"><use href="#i-eye"/></svg>
+          </button>
+        </div>
+
+        <p id="login-error" class="form-error hidden" role="alert"></p>
+
+        <button id="btn-login" type="submit" class="btn btn-primary btn-lg btn-block">เข้าสู่ระบบ</button>
+
+        <div class="demo">
+          <p class="demo-title">บัญชีทดลอง <span>แตะเพื่อกรอกให้อัตโนมัติ</span></p>
+          <div id="demo-accounts" class="demo-list"></div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       โครงหลักหลังล็อกอิน: แถบด้านข้าง (จอใหญ่) / แถบแท็บด้านล่าง (มือถือ)
+       ============================================================ -->
+  <div id="app" class="app hidden">
+
+    <aside class="sidebar">
+      <div class="brand-row">
+        <span class="logo-mark">E</span>
+        <span class="brand-name">E-Borrow</span>
+      </div>
+
+      <nav class="side-nav" aria-label="เมนูหลัก">
+        <button class="nav-item" data-goto="page-menu"><svg class="ic"><use href="#i-home"/></svg><span>หน้าหลัก</span></button>
+        <button class="nav-item" data-goto="page-borrow"><svg class="ic"><use href="#i-swap"/></svg><span>ยืมของ</span></button>
+        <button class="nav-item" data-goto="page-pending"><svg class="ic"><use href="#i-list"/></svg><span>รายการค้าง</span><b class="nav-badge hidden">0</b></button>
+        <button class="nav-item" data-goto="page-dashboard"><svg class="ic"><use href="#i-chart"/></svg><span>Dashboard</span></button>
+      </nav>
+
+      <div class="side-user">
+        <span class="avatar js-avatar"></span>
+        <div class="side-user-info">
+          <strong class="js-user-name"></strong>
+          <small class="js-user-ward"></small>
+        </div>
+        <button class="icon-btn js-logout" aria-label="ออกจากระบบ" title="ออกจากระบบ"><svg class="ic"><use href="#i-logout"/></svg></button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <!-- แถบบนสำหรับมือถือ -->
+      <header class="mobile-top">
+        <div class="brand-row">
+          <span class="logo-mark logo-sm">E</span>
+          <span class="brand-name">E-Borrow</span>
+        </div>
+        <div class="mobile-user">
+          <span class="avatar avatar-sm js-avatar"></span>
+          <button class="icon-btn js-logout" aria-label="ออกจากระบบ"><svg class="ic"><use href="#i-logout"/></svg></button>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1">
+
+        <!-- ======================================================
+             หน้า HOME : บอกทันทีว่า "ตอนนี้ต้องทำอะไร"
+             ====================================================== -->
+        <section id="page-menu" class="page hidden">
+          <div class="content">
+            <header class="hello">
+              <p class="hello-date" id="home-date"></p>
+              <h1 id="home-greeting">สวัสดี</h1>
+              <p class="hello-ward"><svg class="ic"><use href="#i-building"/></svg><span class="js-user-ward"></span></p>
+            </header>
+
+            <button id="cta-borrow" class="cta" data-goto="page-borrow">
+              <span class="cta-icon"><svg class="ic"><use href="#i-swap"/></svg></span>
+              <span class="cta-text">
+                <strong>ยืมของ</strong>
+                <small>เลือก ward → เพิ่มของ → ยืนยัน</small>
+              </span>
+              <svg class="ic cta-arrow"><use href="#i-arrow"/></svg>
+            </button>
+
+            <h2 class="section-title">ต้องทำตอนนี้</h2>
+            <div class="todo-grid">
+              <button id="tile-return" class="todo" data-goto="page-pending" data-tab="mine">
+                <span class="todo-num" id="todo-return-num">0</span>
+                <span class="todo-text">
+                  <strong>ต้องส่งคืน</strong>
+                  <small id="todo-return-sub">ของที่ ward เรายืมมา</small>
+                </span>
+              </button>
+              <button id="tile-receive" class="todo" data-goto="page-pending" data-tab="theirs">
+                <span class="todo-num" id="todo-receive-num">0</span>
+                <span class="todo-text">
+                  <strong>รอรับคืน</strong>
+                  <small id="todo-receive-sub">ของเราที่ ward อื่นนำมาคืน</small>
+                </span>
+              </button>
+            </div>
+
+            <h2 class="section-title">ความเคลื่อนไหวล่าสุดของ ward</h2>
+            <div id="home-recent" class="recent"></div>
+
+            <button class="link-card" data-goto="page-dashboard">
+              <svg class="ic"><use href="#i-chart"/></svg>
+              <span>ดูภาพรวมการยืมทั้งระบบ (Dashboard)</span>
+              <svg class="ic"><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             หน้า ยืมของ : ฟอร์ม 3 ขั้นตอนบนหน้าเดียว
+             ====================================================== -->
+        <section id="page-borrow" class="page hidden">
+          <div class="content narrow">
+            <header class="page-head">
+              <h1>ยืมของ</h1>
+              <p>ระบบเติมชื่อและ ward ให้แล้ว เลือกแล้วกดยืนยันได้เลย</p>
+            </header>
+
+            <div class="who">
+              <span class="avatar js-avatar"></span>
+              <div>
+                <strong id="borrow-name"></strong>
+                <small id="borrow-ward"></small>
+              </div>
+              <span class="tag">เติมให้อัตโนมัติ</span>
+            </div>
+
+            <form id="borrow-form" novalidate>
+              <fieldset class="step">
+                <legend><span class="step-no">1</span>ยืมจากหน่วยงานไหน?</legend>
+                <div id="borrow-from" class="chips" role="radiogroup" aria-label="หน่วยงานปลายทาง"></div>
+                <p id="err-from" class="field-error hidden" role="alert"></p>
+              </fieldset>
+
+              <fieldset class="step">
+                <legend><span class="step-no">2</span>ยืมอะไรบ้าง?</legend>
+
+                <div id="suggest-wrap" class="suggest hidden">
+                  <p class="suggest-title">ยืมบ่อย — แตะเพื่อเพิ่ม</p>
+                  <div id="item-suggest" class="chips chips-soft"></div>
+                </div>
+
+                <div id="item-rows"></div>
+                <datalist id="item-list"></datalist>
+
+                <button type="button" id="btn-add-item" class="btn btn-outline btn-block">
+                  <svg class="ic"><use href="#i-plus"/></svg>เพิ่มรายการยืม
+                </button>
+                <p id="err-items" class="field-error hidden" role="alert"></p>
+              </fieldset>
+
+              <fieldset class="step">
+                <legend><span class="step-no">3</span>เหตุผลการยืม <em>(ไม่บังคับ)</em></legend>
+                <div id="reason-chips" class="chips chips-soft"></div>
+                <input id="borrow-reason" type="text" placeholder="หรือพิมพ์เหตุผลเอง เช่น ของใน ward หมดชั่วคราว" autocomplete="off" />
+              </fieldset>
+
+              <div class="action-bar">
+                <button type="button" class="btn btn-ghost" data-goto="page-menu">ยกเลิก</button>
+                <button id="btn-borrow-confirm" type="submit" class="btn btn-confirm btn-lg">ยืนยันการยืม</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             หน้า รายการค้าง : 2 แท็บ ใช้การ์ดแทนตาราง
+             ====================================================== -->
+        <section id="page-pending" class="page hidden">
+          <div class="content">
+            <header class="page-head">
+              <h1>รายการค้าง</h1>
+              <p>ส่งคืนของที่ยืมมา และรับคืนของที่ถูกยืมไป</p>
+            </header>
+
+            <div class="seg" role="tablist" aria-label="ประเภทรายการค้าง">
+              <button id="tab-mine" class="seg-btn" role="tab" data-tab-switch="mine">
+                ต้องคืน <span id="cnt-mine" class="seg-count">0</span>
+              </button>
+              <button id="tab-theirs" class="seg-btn" role="tab" data-tab-switch="theirs">
+                รอรับคืน <span id="cnt-theirs" class="seg-count">0</span>
+              </button>
+            </div>
+
+            <div class="pending-info">
+              <p id="pending-hint" class="hint-bar"></p>
+              <div id="pending-bulk"></div>
+            </div>
+
+            <div id="pending-list" class="loan-list" role="tabpanel"></div>
+          </div>
+        </section>
+
+        <!-- ======================================================
+             หน้า DASHBOARD
+             ====================================================== -->
+        <section id="page-dashboard" class="page hidden">
+          <div class="content">
+            <header class="page-head">
+              <h1>Dashboard</h1>
+              <p>ภาพรวมการยืมทั้งหมดในระบบ</p>
+            </header>
+
+            <div class="stat-grid">
+              <div class="stat">
+                <span class="stat-ic"><svg class="ic"><use href="#i-box"/></svg></span>
+                <small>รายการที่ถูกยืมมากที่สุด</small>
+                <strong id="stat-top-item">—</strong>
+                <em id="stat-top-item-n"></em>
+              </div>
+              <div class="stat">
+                <span class="stat-ic"><svg class="ic"><use href="#i-building"/></svg></span>
+                <small>Ward ที่ถูกยืมมากที่สุด (Giver)</small>
+                <strong id="stat-top-giver">—</strong>
+                <em id="stat-top-giver-n"></em>
+              </div>
+              <div class="stat">
+                <span class="stat-ic"><svg class="ic"><use href="#i-swap"/></svg></span>
+                <small>Ward ที่ไปยืมมากที่สุด</small>
+                <strong id="stat-top-borrower">—</strong>
+                <em id="stat-top-borrower-n"></em>
+              </div>
+            </div>
+
+            <div class="dash-two">
+              <!-- เลือกเดือน แล้วคำนวณจำนวนครั้ง + กระดาษ A4 ที่ประหยัดได้ -->
+              <div class="card">
+                <h2>สรุปรายเดือน</h2>
+                <div class="month-row">
+                  <select id="dash-month" aria-label="เดือน"></select>
+                  <select id="dash-year" aria-label="ปี พ.ศ."></select>
+                </div>
+                <div class="big-nums">
+                  <div><strong id="dash-count">0</strong><small>ครั้งที่ยืม</small></div>
+                  <div class="big-eco"><strong id="dash-paper">0</strong><small>แผ่น A4 ที่ประหยัดได้</small></div>
+                </div>
+                <p class="paper-line">
+                  แต่ละครั้งประหยัดกระดาษ A4 ได้ ½ แผ่น →
+                  <span class="formula">½ × <span id="dash-count2">0</span> = <span id="dash-paper2">0</span></span>
+                </p>
+              </div>
+
+              <div class="card">
+                <h2>ของที่ถูกยืมบ่อย</h2>
+                <div id="dash-bars" class="bars"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h2>รายการยืมทั้งหมดใน Database</h2>
+                <div class="search">
+                  <svg class="ic"><use href="#i-search"/></svg>
+                  <input id="rec-search" type="search" placeholder="ค้นหาของ / ward / ชื่อ" aria-label="ค้นหารายการ" />
+                </div>
+              </div>
+              <div id="rec-filter" class="chips chips-soft chips-sm" role="group" aria-label="กรองตามสถานะ">
+                <button type="button" class="chip is-on" data-filter="all">ทั้งหมด</button>
+                <button type="button" class="chip" data-filter="borrowed">ยืมอยู่</button>
+                <button type="button" class="chip" data-filter="returning">รอรับคืน</button>
+                <button type="button" class="chip" data-filter="returned">คืนแล้ว</button>
+              </div>
+              <div class="table-scroll">
+                <table class="rec-table">
+                  <thead>
+                    <tr><th>วันที่</th><th>ผู้ยืม (Ward)</th><th>ยืมจาก</th><th>รายการ</th><th>จำนวน</th><th>สถานะ</th></tr>
+                  </thead>
+                  <tbody id="table-all"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- แถบแท็บด้านล่าง (เฉพาะมือถือ — เอื้อมนิ้วโป้งถึงง่าย) -->
+    <nav class="tabbar" aria-label="เมนูหลัก">
+      <button class="nav-item" data-goto="page-menu"><svg class="ic"><use href="#i-home"/></svg><span>หน้าหลัก</span></button>
+      <button class="nav-item" data-goto="page-borrow"><svg class="ic"><use href="#i-swap"/></svg><span>ยืมของ</span></button>
+      <button class="nav-item" data-goto="page-pending"><svg class="ic"><use href="#i-list"/></svg><span>รายการค้าง</span><b class="nav-badge hidden">0</b></button>
+      <button class="nav-item" data-goto="page-dashboard"><svg class="ic"><use href="#i-chart"/></svg><span>Dashboard</span></button>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       POPUP ยืนยันสำเร็จ
+       ============================================================ -->
+  <div id="popup" class="popup-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <div class="popup-box">
+      <div class="popup-check"><svg class="ic"><use href="#i-check"/></svg></div>
+      <h2 id="popup-title">ส่งคำขอยืมเรียบร้อย</h2>
+      <p id="popup-text">ส่งรายการที่ต้องการยืมให้เรียบร้อย</p>
+      <ul id="popup-items" class="popup-items"></ul>
+      <div class="popup-actions">
+        <button id="btn-popup-pending" class="btn btn-primary btn-block" data-goto="page-pending" data-tab="mine">ไปที่รายการค้าง</button>
+        <button id="btn-popup-close" class="btn btn-ghost btn-block" data-goto="page-menu">กลับหน้าหลัก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- แจ้งเตือนชั่วคราว (แทน alert) พร้อมปุ่ม "เลิกทำ" -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite">
+    <span id="toast-msg"></span>
+    <button id="toast-action" class="toast-action hidden" type="button"></button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
